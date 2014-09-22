@@ -215,7 +215,7 @@ object ScaldingBuild extends Build {
     System.getenv.asScala.getOrElse("SCALDING_CASCADING_JDBC_VERSION", "2.5.4")
 
   val hadoopVersion = "1.2.1"
-  val algebirdVersion = "0.7.1"
+  val algebirdVersion = "0.8.1"
   val bijectionVersion = "0.7.0"
   val chillVersion = "0.5.0"
   val slf4jVersion = "1.6.6"
@@ -250,9 +250,7 @@ object ScaldingBuild extends Build {
       // TODO: split this out into scalding-thrift
       "org.apache.thrift" % "libthrift" % "0.5.0",
       "org.slf4j" % "slf4j-api" % slf4jVersion,
-      "org.slf4j" % "slf4j-log4j12" % slf4jVersion % "provided",
-      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-      "org.scala-tools.testing" %% "specs" % "1.6.9" % "test"
+      "org.slf4j" % "slf4j-log4j12" % slf4jVersion % "provided"
     )
   ).dependsOn(scaldingArgs, scaldingDate, scaldingCore)
 
@@ -262,9 +260,7 @@ object ScaldingBuild extends Build {
       "org.apache.avro" % "avro" % "1.7.4",
       "org.slf4j" % "slf4j-api" % slf4jVersion,
       "org.apache.hadoop" % "hadoop-core" % hadoopVersion % "provided",
-      "org.slf4j" % "slf4j-log4j12" % slf4jVersion % "test",
-      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-      "org.scala-tools.testing" %% "specs" % "1.6.9" % "test"
+      "org.slf4j" % "slf4j-log4j12" % slf4jVersion % "test"
     )
   ).dependsOn(scaldingCore)
 
@@ -273,9 +269,7 @@ object ScaldingBuild extends Build {
       "com.twitter" % "parquet-cascading" % "1.6.0rc2",
       "org.slf4j" % "slf4j-api" % slf4jVersion,
       "org.apache.hadoop" % "hadoop-core" % hadoopVersion % "provided",
-      "org.slf4j" % "slf4j-log4j12" % slf4jVersion % "test",
-      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-      "org.scala-tools.testing" %% "specs" % "1.6.9" % "test"
+      "org.slf4j" % "slf4j-log4j12" % slf4jVersion % "test"
     )
   ).dependsOn(scaldingCore)
   
@@ -307,9 +301,7 @@ object ScaldingBuild extends Build {
       "org.apache.hbase" % "hbase" % "0.94.10",
       "org.slf4j" % "slf4j-api" % slf4jVersion,
       "org.apache.hadoop" % "hadoop-core" % hadoopVersion % "provided",
-      "org.slf4j" % "slf4j-log4j12" % slf4jVersion % "test",
-      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-      "org.scala-tools.testing" %% "specs" % "1.6.9" % "test"
+      "org.slf4j" % "slf4j-log4j12" % slf4jVersion % "test"
     )
   ).dependsOn(scaldingCore)
 
@@ -328,7 +320,7 @@ object ScaldingBuild extends Build {
         import com.twitter.scalding.ReplImplicitContext._
         """,
       libraryDependencies <++= (scalaVersion) { scalaVersion => Seq(
-        "org.scala-lang" % "jline" % scalaVersion,
+        "jline" % "jline" % scalaVersion.take(4),
         "org.scala-lang" % "scala-compiler" % scalaVersion,
         "org.apache.hadoop" % "hadoop-core" % hadoopVersion % "provided",
         "org.apache.hadoop" % "hadoop-core" % hadoopVersion % "unprovided",
@@ -350,7 +342,7 @@ object ScaldingBuild extends Build {
   lazy val scaldingJson = module("json").settings(
     libraryDependencies <++= (scalaVersion) { scalaVersion => Seq(
       "org.apache.hadoop" % "hadoop-core" % hadoopVersion % "provided",
-      "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.2.3"
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.4.2"
     )
     }
   ).dependsOn(scaldingCore)
