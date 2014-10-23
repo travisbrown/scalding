@@ -17,7 +17,8 @@ object ScaldingBuild extends Build {
     case version if version startsWith "2.11" => "2.11"
     case version if version startsWith "2.10" => "2.10"
   }
-
+  val scalaTestVersion = "2.2.2"
+  val scalaCheckVersion = "1.11.5"
   val printDependencyClasspath = taskKey[Unit]("Prints location of the dependencies")
 
   val sharedSettings = Project.defaultSettings ++ assemblySettings ++ scalariformSettings ++ Seq(
@@ -34,8 +35,8 @@ object ScaldingBuild extends Build {
     javacOptions in doc := Seq("-source", "1.6"),
 
     libraryDependencies ++= Seq(
-      "org.scalacheck" %% "scalacheck" % "1.11.5" % "test",
-      "org.scalatest" %% "scalatest" % "2.2.2" % "test",
+      "org.scalacheck" %% "scalacheck" % scalaCheckVersion % "test",
+      "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
       "org.slf4j" % "slf4j-log4j12" % slf4jVersion % "test"
     ),
 
@@ -358,6 +359,8 @@ object ScaldingBuild extends Build {
     libraryDependencies <++= (scalaVersion) { scalaVersion => Seq(
       ("org.apache.hadoop" % "hadoop-core" % hadoopVersion),
       ("org.apache.hadoop" % "hadoop-minicluster" % hadoopVersion),
+      "org.scalacheck" %% "scalacheck" % scalaCheckVersion,
+      "org.scalatest" %% "scalatest" % scalaTestVersion,
       "org.slf4j" % "slf4j-api" % slf4jVersion,
       "org.slf4j" % "slf4j-log4j12" % slf4jVersion
     )
