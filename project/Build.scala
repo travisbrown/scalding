@@ -13,8 +13,8 @@ import scala.collection.JavaConverters._
 
 object ScaldingBuild extends Build {
 
-  def scalaBinaryVersion(scalaVersion: String) = scalaVersion match {    
-    case version if version startsWith "2.9" => "2.9"
+  def scalaBinaryVersion(scalaVersion: String) = scalaVersion match {
+    case version if version startsWith "2.11" => "2.11"
     case version if version startsWith "2.10" => "2.10"
   }
 
@@ -272,10 +272,10 @@ object ScaldingBuild extends Build {
       "org.slf4j" % "slf4j-log4j12" % slf4jVersion % "test"
     )
   ).dependsOn(scaldingCore)
-  
+
   def scaldingParquetScroogeDeps(version: String) = {
-    if (scalaBinaryVersion(version) == "2.9") 
-      Seq() 
+    if (scalaBinaryVersion(version) == "2.9")
+      Seq()
     else
       Seq(
         "com.twitter" % "parquet-cascading" % "1.6.0rc2",
@@ -287,7 +287,7 @@ object ScaldingBuild extends Build {
         "org.scala-tools.testing" %% "specs" % "1.6.9" % "test"
       )
   }
-  
+
   lazy val scaldingParquetScrooge = module("parquet-scrooge").settings(
     skip in compile := scalaBinaryVersion(scalaVersion.value) == "2.9",
     skip in test := scalaBinaryVersion(scalaVersion.value) == "2.9",
@@ -331,7 +331,7 @@ object ScaldingBuild extends Build {
       )
       },
       // https://gist.github.com/djspiewak/976cd8ac65e20e136f05
-      unmanagedSourceDirectories in Compile += (sourceDirectory in Compile).value / s"scala-${scalaBinaryVersion.value}"
+      unmanagedSourceDirectories in Compile += (sourceDirectory in Compile).value / s"scala-${scalaBinaryVersion(scalaVersion.value)}"
   ).dependsOn(scaldingCore)
   // run with 'unprovided' config includes libs marked 'unprovided' in classpath
   .settings(inConfig(Unprovided)(Classpaths.configSettings ++ Seq(
