@@ -274,7 +274,7 @@ object ScaldingBuild extends Build {
   ).dependsOn(scaldingCore)
 
   def scaldingParquetScroogeDeps(version: String) = {
-    if (scalaBinaryVersion(version) == "2.11")
+    if (!(scalaBinaryVersion(version) == "2.10"))
       Seq()
     else
       Seq(
@@ -286,9 +286,9 @@ object ScaldingBuild extends Build {
   }
 
   lazy val scaldingParquetScrooge = module("parquet-scrooge").settings(
-    skip in compile := scalaBinaryVersion(scalaVersion.value) == "2.11",
-    skip in test := scalaBinaryVersion(scalaVersion.value) == "2.11",
-    publishArtifact := !(scalaBinaryVersion(scalaVersion.value) == "2.11"),
+    skip in compile := !(scalaBinaryVersion(scalaVersion.value) == "2.10"),
+    skip in test := !(scalaBinaryVersion(scalaVersion.value) == "2.10"),
+    publishArtifact := scalaBinaryVersion(scalaVersion.value) == "2.10",
     libraryDependencies ++= scaldingParquetScroogeDeps(scalaVersion.value)
   ).dependsOn(scaldingCore, scaldingParquet % "compile->compile;test->test")
 
@@ -310,6 +310,9 @@ object ScaldingBuild extends Build {
   lazy val scaldingRepl = module("repl")
     .configs(Unprovided) // include 'unprovided' as config option
     .settings(
+      skip in compile := !(scalaBinaryVersion(scalaVersion.value) == "2.10"),
+      skip in test := !(scalaBinaryVersion(scalaVersion.value) == "2.10"),
+      publishArtifact := scalaBinaryVersion(scalaVersion.value) == "2.10",
       initialCommands in console := """
         import com.twitter.scalding._
         import com.twitter.scalding.ReplImplicits._
