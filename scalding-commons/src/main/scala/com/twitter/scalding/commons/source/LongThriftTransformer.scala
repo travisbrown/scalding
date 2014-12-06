@@ -27,7 +27,7 @@ import org.apache.thrift.TBase
 
 trait LongThriftTransformer[V <: TBase[_, _]] extends Source {
 
-  def mt: Manifest[V]
+  def mt: scala.reflect.ClassTag[V]
   def fields: Fields
 
   // meant to override fields within WritableSequenceFileScheme.

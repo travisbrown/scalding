@@ -86,10 +86,10 @@ case class UnpackedAvroSource[T](paths: Seq[String], schema: Option[Schema])(imp
 }
 
 object PackedAvroSource {
-  def apply[T: AvroSchemaType: Manifest: TupleConverter](path: String) = new PackedAvroSource[T](Seq(path))
+  def apply[T: AvroSchemaType: scala.reflect.ClassTag: TupleConverter](path: String) = new PackedAvroSource[T](Seq(path))
 }
 
-case class PackedAvroSource[T](paths: Seq[String])(implicit val mf: Manifest[T], conv: TupleConverter[T], tset: TupleSetter[T], avroType: AvroSchemaType[T])
+case class PackedAvroSource[T](paths: Seq[String])(implicit val mf: scala.reflect.ClassTag[T], conv: TupleConverter[T], tset: TupleSetter[T], avroType: AvroSchemaType[T])
   extends FixedPathSource(paths: _*) with PackedAvroFileScheme[T] with Mappable[T] with TypedSink[T] {
   override def converter[U >: T] = TupleConverter.asSuperConverter[T, U](conv)
 

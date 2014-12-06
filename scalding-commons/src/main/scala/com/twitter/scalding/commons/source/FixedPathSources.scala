@@ -22,12 +22,12 @@ import com.twitter.scalding.Dsl._
 import java.io.Serializable
 import org.apache.thrift.TBase
 
-abstract class FixedPathLzoThrift[T <: TBase[_, _]: Manifest](path: String*)
+abstract class FixedPathLzoThrift[T <: TBase[_, _]: scala.reflect.ClassTag](path: String*)
   extends FixedPathSource(path: _*) with LzoThrift[T] {
-  def column = manifest[T].runtimeClass
+  def column = scala.reflect.classTag[T].runtimeClass
 }
 
-abstract class FixedPathLzoProtobuf[T <: Message: Manifest](path: String)
+abstract class FixedPathLzoProtobuf[T <: Message: scala.reflect.ClassTag](path: String)
   extends FixedPathSource(path) with LzoProtobuf[T] {
-  def column = manifest[T].runtimeClass
+  def column = scala.reflect.classTag[T].runtimeClass
 }

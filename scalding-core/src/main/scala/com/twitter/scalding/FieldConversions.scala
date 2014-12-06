@@ -204,7 +204,7 @@ trait FieldConversions extends LowPriorityFieldConversions {
     (f1, f2)
   }
   /**
-   * We can't set the field Manifests because cascading doesn't (yet) expose field type information
+   * We can't set the field scala.reflect.ClassTags because cascading doesn't (yet) expose field type information
    * in the Fields API.
    */
   implicit def fieldsToRichFields(fields: Fields): RichFields = {
@@ -255,17 +255,17 @@ object RichFields {
 sealed trait Field[T] extends java.io.Serializable {
   def id: Comparable[_]
   def ord: Ordering[T]
-  def mf: Option[Manifest[T]]
+  def mf: Option[scala.reflect.ClassTag[T]]
 }
 
 @DefaultSerializer(classOf[serialization.IntFieldSerializer])
-case class IntField[T](override val id: java.lang.Integer)(implicit override val ord: Ordering[T], override val mf: Option[Manifest[T]]) extends Field[T]
+case class IntField[T](override val id: java.lang.Integer)(implicit override val ord: Ordering[T], override val mf: Option[scala.reflect.ClassTag[T]]) extends Field[T]
 
 @DefaultSerializer(classOf[serialization.StringFieldSerializer])
-case class StringField[T](override val id: String)(implicit override val ord: Ordering[T], override val mf: Option[Manifest[T]]) extends Field[T]
+case class StringField[T](override val id: String)(implicit override val ord: Ordering[T], override val mf: Option[scala.reflect.ClassTag[T]]) extends Field[T]
 
 object Field {
-  def apply[T](index: Int)(implicit ord: Ordering[T], mf: Manifest[T]) = IntField[T](index)(ord, Some(mf))
-  def apply[T](name: String)(implicit ord: Ordering[T], mf: Manifest[T]) = StringField[T](name)(ord, Some(mf))
-  def apply[T](symbol: Symbol)(implicit ord: Ordering[T], mf: Manifest[T]) = StringField[T](symbol.name)(ord, Some(mf))
+  def apply[T](index: Int)(implicit ord: Ordering[T], mf: scala.reflect.ClassTag[T]) = IntField[T](index)(ord, Some(mf))
+  def apply[T](name: String)(implicit ord: Ordering[T], mf: scala.reflect.ClassTag[T]) = StringField[T](name)(ord, Some(mf))
+  def apply[T](symbol: Symbol)(implicit ord: Ordering[T], mf: scala.reflect.ClassTag[T]) = StringField[T](symbol.name)(ord, Some(mf))
 }

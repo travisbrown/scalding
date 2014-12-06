@@ -71,7 +71,7 @@ object AvroSchemaType {
   }
 
   // Avro SpecificRecord
-  implicit def SpecificRecordSchema[T <: SpecificRecord](implicit mf: Manifest[T]) = new AvroSchemaType[T] {
+  implicit def SpecificRecordSchema[T <: SpecificRecord](implicit mf: scala.reflect.ClassTag[T]) = new AvroSchemaType[T] {
     def schema = mf.runtimeClass.newInstance.asInstanceOf[SpecificRecord].getSchema
   }
 

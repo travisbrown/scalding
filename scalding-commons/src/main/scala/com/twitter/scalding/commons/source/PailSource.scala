@@ -50,7 +50,7 @@ object PailSource {
    * SEE EXAMPLE : https://gist.github.com/krishnanraman/5224937
    */
   def sink[T](rootPath: String,
-    targetFn: (T) => List[String])(implicit cmf: ClassTag[T],
+    targetFn: (T) => List[String])(implicit cmf: scala.reflect.ClassTag[T],
       injection: Injection[T, Array[Byte]]): PailSource[T] = {
 
     val validator = ((x: List[String]) => true)
@@ -72,7 +72,7 @@ object PailSource {
    * SEE EXAMPLE : https://gist.github.com/krishnanraman/5224937
    */
   def source[T](rootPath: String,
-    subPaths: Array[List[String]])(implicit cmf: ClassTag[T],
+    subPaths: Array[List[String]])(implicit cmf: scala.reflect.ClassTag[T],
       injection: Injection[T, Array[Byte]]): PailSource[T] = {
 
     val validator = ((x: List[String]) => true)
@@ -104,11 +104,11 @@ object PailSource {
 
   /**
    * Alternate sink construction
-   *   Using implicit injections & ClassTag for the type
+   *   Using implicit injections & scala.reflect.ClassTag for the type
    */
   def sink[T](rootPath: String,
     targetFn: (T) => List[String],
-    validator: (List[String]) => Boolean)(implicit cmf: ClassTag[T],
+    validator: (List[String]) => Boolean)(implicit cmf: scala.reflect.ClassTag[T],
       injection: Injection[T, Array[Byte]]): PailSource[T] = {
     val cps = new CodecPailStructure[T]()
     cps.setParams(targetFn, validator, cmf.runtimeClass.asInstanceOf[Class[T]], injection)
@@ -141,7 +141,7 @@ object PailSource {
    */
   def source[T](rootPath: String,
     validator: (List[String]) => Boolean,
-    subPaths: Array[List[String]])(implicit cmf: ClassTag[T],
+    subPaths: Array[List[String]])(implicit cmf: scala.reflect.ClassTag[T],
       injection: Injection[T, Array[Byte]]): PailSource[T] = {
     val cps = new CodecPailStructure[T]()
     cps.setParams(null, validator, cmf.runtimeClass.asInstanceOf[Class[T]], injection)

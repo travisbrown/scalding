@@ -22,7 +22,7 @@ import cascading.tuple._
 import java.lang.reflect.Method
 import java.lang.reflect.Constructor
 
-import scala.reflect.Manifest
+import scala.reflect.ClassTag
 
 /**
  * Typeclass for packing a cascading Tuple into some type T,
@@ -40,11 +40,11 @@ trait TuplePacker[T] extends java.io.Serializable {
 object TuplePacker extends CaseClassPackers
 
 trait CaseClassPackers extends LowPriorityTuplePackers {
-  implicit def caseClassPacker[T <: Product](implicit mf: Manifest[T]) = new OrderedTuplePacker[T]
+  implicit def caseClassPacker[T <: Product](implicit mf: scala.reflect.ClassTag[T]) = new OrderedTuplePacker[T]
 }
 
 trait LowPriorityTuplePackers extends java.io.Serializable {
-  implicit def genericTuplePacker[T: Manifest] = new ReflectionTuplePacker[T]
+  implicit def genericTuplePacker[T: scala.reflect.ClassTag] = new ReflectionTuplePacker[T]
 }
 
 /**
@@ -55,11 +55,11 @@ trait LowPriorityTuplePackers extends java.io.Serializable {
  * @author Argyris Zymnis
  * @author Oscar Boykin
  */
-class ReflectionTuplePacker[T](implicit m: Manifest[T]) extends TuplePacker[T] {
+class ReflectionTuplePacker[T](implicit m: scala.reflect.ClassTag[T]) extends TuplePacker[T] {
   override def newConverter(fields: Fields) = new ReflectionTupleConverter[T](fields)(m)
 }
 
-class ReflectionTupleConverter[T](fields: Fields)(implicit m: Manifest[T]) extends TupleConverter[T] {
+class ReflectionTupleConverter[T](fields: Fields)(implicit m: scala.reflect.ClassTag[T]) extends TupleConverter[T] {
   override val arity = fields.size
 
   def lowerFirst(s: String) = s.substring(0, 1).toLowerCase + s.substring(1)
@@ -100,11 +100,11 @@ class ReflectionTupleConverter[T](fields: Fields)(implicit m: Manifest[T]) exten
 /**
  * This just blindly uses the first public constructor with the same arity as the fields size
  */
-class OrderedTuplePacker[T](implicit m: Manifest[T]) extends TuplePacker[T] {
+class OrderedTuplePacker[T](implicit m: scala.reflect.ClassTag[T]) extends TuplePacker[T] {
   override def newConverter(fields: Fields) = new OrderedConstructorConverter[T](fields)(m)
 }
 
-class OrderedConstructorConverter[T](fields: Fields)(implicit mf: Manifest[T]) extends TupleConverter[T] {
+class OrderedConstructorConverter[T](fields: Fields)(implicit mf: scala.reflect.ClassTag[T]) extends TupleConverter[T] {
   override val arity = fields.size
   // Keep this as a method, so we can validate by calling, but don't serialize it, and keep it lazy
   // below

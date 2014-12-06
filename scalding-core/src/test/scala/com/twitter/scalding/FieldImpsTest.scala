@@ -60,7 +60,7 @@ class FieldImpsTest extends WordSpec with Matchers with FieldConversions {
   "Field" should {
     "contain manifest" in {
       val field = Field[Long]("foo")
-      field.mf should contain (implicitly[Manifest[Long]])
+      field.mf should contain (implicitly[scala.reflect.ClassTag[Long]])
     }
   }
   "RichFields" should {
@@ -117,7 +117,7 @@ class FieldImpsTest extends WordSpec with Matchers with FieldConversions {
       setAndCheckField(Field[java.math.BigInteger](0))
       // Try a custom ordering
       val ord = implicitly[Ordering[java.math.BigInteger]].reverse
-      setAndCheckField(Field[java.math.BigInteger]("bell")(ord, implicitly[Manifest[java.math.BigInteger]]))
+      setAndCheckField(Field[java.math.BigInteger]("bell")(ord, implicitly[scala.reflect.ClassTag[java.math.BigInteger]]))
       setAndCheckFieldS(List(Field[java.math.BigInteger](0), Field[java.math.BigDecimal]("bar")))
     }
     "convert from enumeration values" in {

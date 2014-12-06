@@ -37,49 +37,49 @@ abstract class DailySuffixLzoCodec[T](prefix: String, dateRange: DateRange)(impl
   override lazy val injection = boxed.get
 }
 
-abstract class DailySuffixLzoProtobuf[T <: Message: Manifest](prefix: String, dateRange: DateRange)
+abstract class DailySuffixLzoProtobuf[T <: Message: scala.reflect.ClassTag](prefix: String, dateRange: DateRange)
   extends DailySuffixSource(prefix, dateRange) with LzoProtobuf[T] {
-  override def column = manifest[T].runtimeClass
+  override def column = scala.reflect.classTag[T].runtimeClass
 }
 
-abstract class DailySuffixMostRecentLzoProtobuf[T <: Message: Manifest](prefix: String, dateRange: DateRange)
+abstract class DailySuffixMostRecentLzoProtobuf[T <: Message: scala.reflect.ClassTag](prefix: String, dateRange: DateRange)
   extends DailySuffixMostRecentSource(prefix, dateRange) with LzoProtobuf[T] {
-  override def column = manifest[T].erasure
+  override def column = scala.reflect.classTag[T].erasure
 }
 
-abstract class DailySuffixLzoThrift[T <: TBase[_, _]: Manifest](prefix: String, dateRange: DateRange)
+abstract class DailySuffixLzoThrift[T <: TBase[_, _]: scala.reflect.ClassTag](prefix: String, dateRange: DateRange)
   extends DailySuffixSource(prefix, dateRange) with LzoThrift[T] {
-  override def column = manifest[T].runtimeClass
+  override def column = scala.reflect.classTag[T].runtimeClass
 }
 
-abstract class DailyPrefixSuffixLzoThrift[T <: TBase[_, _]: Manifest](prefix: String, suffix: String, dateRange: DateRange)
+abstract class DailyPrefixSuffixLzoThrift[T <: TBase[_, _]: scala.reflect.ClassTag](prefix: String, suffix: String, dateRange: DateRange)
   extends DailyPrefixSuffixSource(prefix, suffix, dateRange) with LzoThrift[T] {
-  override def column = manifest[T].runtimeClass
+  override def column = scala.reflect.classTag[T].runtimeClass
 }
 
-abstract class TimePathedLongThriftSequenceFile[V <: TBase[_, _]: Manifest](f: Fields, prefix: String, dateFormat: String, dateRange: DateRange)
+abstract class TimePathedLongThriftSequenceFile[V <: TBase[_, _]: scala.reflect.ClassTag](f: Fields, prefix: String, dateFormat: String, dateRange: DateRange)
   extends TimePathedSource(prefix + dateFormat + "/*", dateRange, DateOps.UTC)
   with WritableSequenceFileScheme
   with Serializable
   with Mappable[(Long, V)]
   with LongThriftTransformer[V] {
   override val fields = f
-  override val mt = implicitly[Manifest[V]]
+  override val mt = implicitly[scala.reflect.ClassTag[V]]
   override def converter[U >: (Long, V)] = TupleConverter.asSuperConverter[(Long, V), U](TupleConverter.of[(Long, V)])
 }
 
-abstract class MostRecentGoodLongThriftSequenceFile[V <: TBase[_, _]: Manifest](f: Fields, pattern: String, dateRange: DateRange)
+abstract class MostRecentGoodLongThriftSequenceFile[V <: TBase[_, _]: scala.reflect.ClassTag](f: Fields, pattern: String, dateRange: DateRange)
   extends MostRecentGoodSource(pattern, dateRange, DateOps.UTC)
   with WritableSequenceFileScheme
   with Serializable
   with Mappable[(Long, V)]
   with LongThriftTransformer[V] {
   override val fields = f
-  override val mt = implicitly[Manifest[V]]
+  override val mt = implicitly[scala.reflect.ClassTag[V]]
   override def converter[U >: (Long, V)] = TupleConverter.asSuperConverter[(Long, V), U](TupleConverter.of[(Long, V)])
 }
 
-abstract class DailySuffixLongThriftSequenceFile[V <: TBase[_, _]: Manifest](f: Fields, prefix: String, dateRange: DateRange)
+abstract class DailySuffixLongThriftSequenceFile[V <: TBase[_, _]: scala.reflect.ClassTag](f: Fields, prefix: String, dateRange: DateRange)
   extends TimePathedLongThriftSequenceFile[V](f, prefix, TimePathedSource.YEAR_MONTH_DAY, dateRange)
 
 case class DailySuffixLzoTsv(prefix: String, fs: Fields = Fields.ALL)(override implicit val dateRange: DateRange)

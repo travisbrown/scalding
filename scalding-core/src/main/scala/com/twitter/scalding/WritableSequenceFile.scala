@@ -34,16 +34,16 @@ trait WritableSequenceFileScheme extends SchemedSource {
 
   // TODO Cascading doesn't support local mode yet
   override def hdfsScheme =
-    HadoopSchemeInstance(new CHWritableSequenceFile(fields, keyType, valueType))
+    HadoopSchemeInstance(new CHWritableSequenceFile(fields, keyType, valueType).asInstanceOf[cascading.scheme.Scheme[_, _, _, _, _]])
 }
 
 object WritableSequenceFile {
   /** by default uses the first two fields in the tuple */
-  def apply[K <: Writable: Manifest, V <: Writable: Manifest](path: String): WritableSequenceFile[K, V] =
+  def apply[K <: Writable: scala.reflect.ClassTag, V <: Writable: scala.reflect.ClassTag](path: String): WritableSequenceFile[K, V] =
     WritableSequenceFile(path, Dsl.intFields(0 to 1))
 }
 
-case class WritableSequenceFile[K <: Writable: Manifest, V <: Writable: Manifest](
+case class WritableSequenceFile[K <: Writable: scala.reflect.ClassTag, V <: Writable: scala.reflect.ClassTag](
   p: String,
   f: Fields,
   override val sinkMode: SinkMode = SinkMode.REPLACE)
@@ -54,8 +54,8 @@ case class WritableSequenceFile[K <: Writable: Manifest, V <: Writable: Manifest
   with TypedSource[(K, V)] {
 
   override val fields = f
-  override val keyType = manifest[K].runtimeClass.asInstanceOf[Class[_ <: Writable]]
-  override val valueType = manifest[V].runtimeClass.asInstanceOf[Class[_ <: Writable]]
+  override val keyType = scala.reflect.classTag[K].runtimeClass.asInstanceOf[Class[_ <: Writable]]
+  override val valueType = scala.reflect.classTag[V].runtimeClass.asInstanceOf[Class[_ <: Writable]]
 
   def setter[U <: (K, V)]: TupleSetter[U] =
     TupleSetter.asSubSetter[(K, V), U](TupleSetter.tup2Setter[(K, V)])
@@ -68,14 +68,14 @@ case class WritableSequenceFile[K <: Writable: Manifest, V <: Writable: Manifest
 
 object MultipleWritableSequenceFiles {
   /** by default uses the first two fields in the tuple */
-  def apply[K <: Writable: Manifest, V <: Writable: Manifest](paths: Seq[String]): MultipleWritableSequenceFiles[K, V] =
+  def apply[K <: Writable: scala.reflect.ClassTag, V <: Writable: scala.reflect.ClassTag](paths: Seq[String]): MultipleWritableSequenceFiles[K, V] =
     MultipleWritableSequenceFiles(paths, Dsl.intFields(0 to 1))
 }
 
 /**
  * This is only a TypedSource as sinking into multiple directories is not well defined
  */
-case class MultipleWritableSequenceFiles[K <: Writable: Manifest, V <: Writable: Manifest](
+case class MultipleWritableSequenceFiles[K <: Writable: scala.reflect.ClassTag, V <: Writable: scala.reflect.ClassTag](
   p: Seq[String], f: Fields)
   extends FixedPathSource(p: _*)
   with WritableSequenceFileScheme
@@ -83,8 +83,8 @@ case class MultipleWritableSequenceFiles[K <: Writable: Manifest, V <: Writable:
   with TypedSource[(K, V)] {
 
   override val fields = f
-  override val keyType = manifest[K].runtimeClass.asInstanceOf[Class[_ <: Writable]]
-  override val valueType = manifest[V].runtimeClass.asInstanceOf[Class[_ <: Writable]]
+  override val keyType = scala.reflect.classTag[K].runtimeClass.asInstanceOf[Class[_ <: Writable]]
+  override val valueType = scala.reflect.classTag[V].runtimeClass.asInstanceOf[Class[_ <: Writable]]
 
   def converter[U >: (K, V)]: TupleConverter[U] =
     TupleConverter.asSuperConverter(TupleConverter.tuple2Converter[K, V])

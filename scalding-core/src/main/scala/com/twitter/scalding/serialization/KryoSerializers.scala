@@ -81,7 +81,7 @@ class IntFieldSerializer extends KSerializer[IntField[_]] {
   def read(kser: Kryo, in: Input, cls: Class[IntField[_]]): IntField[_] = {
     val id = in.readInt
     val ord = kser.readClassAndObject(in).asInstanceOf[Ordering[Any]]
-    val mf = kser.readClassAndObject(in).asInstanceOf[Option[Manifest[Any]]]
+    val mf = kser.readClassAndObject(in).asInstanceOf[Option[scala.reflect.ClassTag[Any]]]
     IntField[Any](id)(ord, mf)
   }
 }
@@ -97,7 +97,7 @@ class StringFieldSerializer extends KSerializer[StringField[_]] {
   def read(kser: Kryo, in: Input, cls: Class[StringField[_]]): StringField[_] = {
     val id = in.readString
     val ord = kser.readClassAndObject(in).asInstanceOf[Ordering[Any]]
-    val mf = kser.readClassAndObject(in).asInstanceOf[Option[Manifest[Any]]]
+    val mf = kser.readClassAndObject(in).asInstanceOf[Option[scala.reflect.ClassTag[Any]]]
     StringField[Any](id)(ord, mf)
   }
 }

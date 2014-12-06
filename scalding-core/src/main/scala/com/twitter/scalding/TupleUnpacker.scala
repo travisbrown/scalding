@@ -19,7 +19,7 @@ import cascading.pipe._
 import cascading.pipe.joiner._
 import cascading.tuple._
 
-import scala.reflect.Manifest
+import scala.reflect.ClassTag
 import scala.collection.JavaConverters._
 
 /**
@@ -38,7 +38,7 @@ trait TupleUnpacker[T] extends java.io.Serializable {
 }
 
 trait LowPriorityTupleUnpackers {
-  implicit def genericUnpacker[T: Manifest] = new ReflectionTupleUnpacker[T]
+  implicit def genericUnpacker[T: scala.reflect.ClassTag] = new ReflectionTupleUnpacker[T]
 }
 
 /**
@@ -72,7 +72,7 @@ object ReflectionUtils {
   // def fieldSetters[T](c: Class[T]): (T,String,AnyRef) => T
 }
 
-class ReflectionTupleUnpacker[T](implicit m: Manifest[T]) extends TupleUnpacker[T] {
+class ReflectionTupleUnpacker[T](implicit m: scala.reflect.ClassTag[T]) extends TupleUnpacker[T] {
 
   // A Fields object representing all of m's
   // fields, in the declared field order.
@@ -94,7 +94,7 @@ class ReflectionTupleUnpacker[T](implicit m: Manifest[T]) extends TupleUnpacker[
     expandIfAll(fields)
 }
 
-class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T]) extends TupleSetter[T] {
+class ReflectionSetter[T](fields: Fields)(implicit m: scala.reflect.ClassTag[T]) extends TupleSetter[T] {
 
   validate // Call the validation method at the submitter
 

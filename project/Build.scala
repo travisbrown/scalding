@@ -48,7 +48,8 @@ object ScaldingBuild extends Build {
       "org.mockito" % "mockito-all" % "1.8.5" % "test",
       "org.scalacheck" %% "scalacheck" % scalaCheckVersion % "test",
       "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
-      "org.slf4j" % "slf4j-log4j12" % slf4jVersion % "test"
+      "org.slf4j" % "slf4j-log4j12" % slf4jVersion % "test",
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value
     ),
 
     resolvers ++= Seq(

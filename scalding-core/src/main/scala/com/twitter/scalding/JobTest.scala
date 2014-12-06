@@ -32,9 +32,9 @@ object JobTest {
   def apply(cons: (Args) => Job) = {
     new JobTest(cons)
   }
-  def apply[T <: Job: Manifest] = {
+  def apply[T <: Job: scala.reflect.ClassTag] = {
     val cons = { (args: Args) =>
-      manifest[T].runtimeClass
+      scala.reflect.classTag[T].runtimeClass
         .getConstructor(classOf[Args])
         .newInstance(args)
         .asInstanceOf[Job]

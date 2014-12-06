@@ -37,14 +37,14 @@ case class HourlySuffixLzoTsv(prefix: String, fs: Fields = Fields.ALL)(override 
   override val fields = fs
 }
 
-abstract class HourlySuffixLzoThrift[T <: TBase[_, _]: Manifest](prefix: String, dateRange: DateRange)
+abstract class HourlySuffixLzoThrift[T <: TBase[_, _]: scala.reflect.ClassTag](prefix: String, dateRange: DateRange)
   extends HourlySuffixSource(prefix, dateRange) with LzoThrift[T] {
-  override def column = manifest[T].runtimeClass
+  override def column = scala.reflect.classTag[T].runtimeClass
 }
 
-abstract class HourlySuffixLzoProtobuf[T <: Message: Manifest](prefix: String, dateRange: DateRange)
+abstract class HourlySuffixLzoProtobuf[T <: Message: scala.reflect.ClassTag](prefix: String, dateRange: DateRange)
   extends HourlySuffixSource(prefix, dateRange) with LzoProtobuf[T] {
-  override def column = manifest[T].runtimeClass
+  override def column = scala.reflect.classTag[T].runtimeClass
 }
 
 abstract class HourlySuffixLzoText(prefix: String, dateRange: DateRange)

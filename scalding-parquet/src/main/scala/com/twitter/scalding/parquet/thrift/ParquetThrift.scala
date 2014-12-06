@@ -30,7 +30,7 @@ object ParquetThrift extends Serializable {
 
 trait ParquetThriftBase[T] extends FileSource with SingleMappable[T] with TypedSink[T] with LocalTapSource with HasFilterPredicate with HasColumnProjection {
 
-  def mf: Manifest[T]
+  def mf: scala.reflect.ClassTag[T]
 
   def config: ParquetValueScheme.Config[T] = {
     val config = new ParquetValueScheme.Config[T].withRecordClass(mf.runtimeClass.asInstanceOf[Class[T]])
@@ -102,13 +102,13 @@ trait ParquetThrift[T <: ParquetThrift.ThriftBase] extends ParquetThriftBase[T] 
  */
 class DailySuffixParquetThrift[T <: ParquetThrift.ThriftBase](
   path: String,
-  dateRange: DateRange)(implicit override val mf: Manifest[T])
+  dateRange: DateRange)(implicit override val mf: scala.reflect.ClassTag[T])
   extends DailySuffixSource(path, dateRange) with ParquetThrift[T]
 
 class HourlySuffixParquetThrift[T <: ParquetThrift.ThriftBase](
   path: String,
-  dateRange: DateRange)(implicit override val mf: Manifest[T])
+  dateRange: DateRange)(implicit override val mf: scala.reflect.ClassTag[T])
   extends HourlySuffixSource(path, dateRange) with ParquetThrift[T]
 
-class FixedPathParquetThrift[T <: ParquetThrift.ThriftBase](paths: String*)(implicit override val mf: Manifest[T])
+class FixedPathParquetThrift[T <: ParquetThrift.ThriftBase](paths: String*)(implicit override val mf: scala.reflect.ClassTag[T])
   extends FixedPathSource(paths: _*) with ParquetThrift[T]
