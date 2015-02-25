@@ -36,11 +36,11 @@ import com.twitter.scalding.DateRange
 import com.twitter.scalding.RichDate
 import com.twitter.scalding.Args
 
-import com.twitter.chill._
+import com.twitter.chill.algebird._
 import com.twitter.chill.config.Config
+import com.twitter.chill.{SingletonSerializer, ScalaKryoInstantiator, KryoInstantiator}
 
 class KryoHadoop(config: Config) extends KryoInstantiator {
-
   /**
    * TODO!!!
    * Deal with this issue.  The problem is grouping by Kryo serialized
@@ -59,12 +59,11 @@ class KryoHadoop(config: Config) extends KryoInstantiator {
     newK.register(classOf[DateRange], new DateRangeSerializer())
     newK.register(classOf[Args], new ArgsSerializer)
     // Some of the monoids from Algebird that we use:
-    newK.register(classOf[com.twitter.algebird.AveragedValue], new AveragedValueSerializer)
+    newK.register(classOf[com.twitter.algebird.AveragedValue], new  AveragedValueSerializer)
     newK.register(classOf[com.twitter.algebird.DecayedValue], new DecayedValueSerializer)
     newK.register(classOf[com.twitter.algebird.HyperLogLogMonoid], new HLLMonoidSerializer)
     newK.register(classOf[com.twitter.algebird.Moments], new MomentsSerializer)
     newK.addDefaultSerializer(classOf[com.twitter.algebird.HLL], new HLLSerializer)
-
     /**
      * AdaptiveVector is IndexedSeq, which picks up the chill IndexedSeq serializer
      * (which is its own bug), force using the fields serializer here

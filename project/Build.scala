@@ -203,7 +203,8 @@ object ScaldingBuild extends Build {
     scaldingJdbc,
     scaldingHadoopTest,
     scaldingMacros,
-    maple
+    maple,
+    executionTutorial
   )
 
   lazy val formattingPreferences = {
@@ -251,6 +252,7 @@ object ScaldingBuild extends Build {
       "cascading" % "cascading-hadoop" % cascadingVersion,
       "com.twitter" %% "chill" % chillVersion,
       "com.twitter" % "chill-hadoop" % chillVersion,
+      "com.twitter" %% "chill-algebird" % chillVersion,
       "com.twitter" % "chill-java" % chillVersion,
       "com.twitter" %% "bijection-core" % bijectionVersion,
       "com.twitter" %% "algebird-core" % algebirdVersion,
@@ -462,4 +464,21 @@ object ScaldingBuild extends Build {
     )
     }
   )
+
+  lazy val executionTutorial = Project(
+    id = "execution-tutorial",
+    base = file("tutorial/execution-tutorial"),
+    settings = sharedSettings
+  ).settings(
+    name := "execution-tutorial",
+    libraryDependencies <++= (scalaVersion) { scalaVersion => Seq(
+      "org.scala-lang" % "scala-library" % scalaVersion,
+      "org.scala-lang" % "scala-reflect" % scalaVersion,
+      "org.apache.hadoop" % "hadoop-core" % hadoopVersion,
+      "org.slf4j" % "slf4j-api" % slf4jVersion,
+      "org.slf4j" % "slf4j-log4j12" % slf4jVersion,
+      "cascading" % "cascading-hadoop" % cascadingVersion
+    )
+    }
+  ).dependsOn(scaldingCore)
 }
