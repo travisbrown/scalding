@@ -273,7 +273,7 @@ object ScaldingBuild extends Build {
     ) ++ (
       if(isScala210x(scalaVersion.value)) {
         Seq(
-          "com.chuusai" % "shapeless_2.10.4" % shapelessVersion
+          "com.chuusai" %% "shapeless" % shapelessVersion cross CrossVersion.full
         )
       } else {
         Seq(
